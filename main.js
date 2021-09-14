@@ -16,7 +16,10 @@ class Requester {
 }
 
 //MAIN
-loadCharacters(onCharactersLoadCallback);
+document.addEventListener(
+  'DOMContentLoaded',
+  () => loadCharacters(onCharactersLoadCallback)
+);
 
 function loadCharacters(onLoadCallback) {
   doGetRequest('https://rickandmortyapi.com/api/character', onLoadCallback);
@@ -36,10 +39,26 @@ function onCharactersLoadCallback(status, response) {
 
   let root = JSON.parse(response); // Ошибка парсинга?
 
-  for (let result of root.results) { // Поле results undefined?
-    document.write(`<img src="${result.image}" alt="Image" height="128"/>`); // image undefined?
-    document.write('<p>');
-    document.write(result.name); // name undefined?
-    document.write('<hr>');
+  for (let character of root.results) { // Поле results undefined?
+    let characterDiv = createCharacterDiv(character);
+    document.body.append(characterDiv);
   }
+}
+
+function createCharacterDiv(character) {
+  let characterDiv = document.createElement('div');
+  characterDiv.className = "character";
+
+  let image = document.createElement('img');
+  image.src = character.image;
+  image.alt = character.name;
+  image.height = 128;
+
+  let p = document.createElement('p');
+
+  let name = document.createTextNode(character.name);
+
+  characterDiv.append(image, p, name);
+
+  return characterDiv;
 }
