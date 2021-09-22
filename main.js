@@ -39,10 +39,8 @@ function onCharactersLoadCallback(status, response) {
 
   let root = JSON.parse(response); // Ошибка парсинга?
 
-  for (let character of root.results) { // Поле results undefined?
-    let characterDiv = createCharacterDiv(character);
-    document.body.append(characterDiv);
-  }
+  let characters = root.results.map(character => createCharacterDiv(character));
+  document.body.append(...characters);
 }
 
 function createCharacterDiv(character) {
