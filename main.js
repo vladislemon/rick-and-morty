@@ -16,10 +16,7 @@ class Requester {
 }
 
 //MAIN
-document.addEventListener(
-  'DOMContentLoaded',
-  () => loadCharacters(onCharactersLoadCallback)
-);
+loadCharacters(onCharactersLoadCallback);
 
 function loadCharacters(onLoadCallback) {
   doGetRequest('https://rickandmortyapi.com/api/character', onLoadCallback);
