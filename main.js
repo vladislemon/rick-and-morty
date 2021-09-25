@@ -1,10 +1,21 @@
 import {Requester} from "./requester.js";
 
+const CHARACTER_URL = 'https://rickandmortyapi.com/api/character';
+
 //MAIN
 loadCharacters(onCharactersLoadCallback);
 
+document.forms.search.onsubmit = (event) => {
+  loadCharactersFiltered(onCharactersLoadCallback, document.forms.search.elements.name.value);
+  event.preventDefault();
+}
+
 function loadCharacters(onLoadCallback) {
-  doGetRequest('https://rickandmortyapi.com/api/character', onLoadCallback);
+  doGetRequest(CHARACTER_URL, onLoadCallback);
+}
+
+function loadCharactersFiltered(onLoadCallback, name) {
+  doGetRequest(`${CHARACTER_URL}?name=${name}`, onLoadCallback);
 }
 
 function doGetRequest(url, onLoadFunction) {
@@ -22,7 +33,11 @@ function onCharactersLoadCallback(status, response) {
   let root = JSON.parse(response); // Ошибка парсинга?
 
   let characters = root.results.map(character => createCharacterDiv(character));
-  document.body.append(...characters);
+  let oldCharactersDiv = document.getElementById('characters');
+  let newCharactersDiv = document.createElement('div');
+  newCharactersDiv.id = oldCharactersDiv.id;
+  newCharactersDiv.append(...characters);
+  oldCharactersDiv.replaceWith(newCharactersDiv);
 }
 
 function createCharacterDiv(character) {
