@@ -25,19 +25,25 @@ function doGetRequest(url, onLoadFunction) {
 
 // Что будет, если кто-то ещё одновременно модифицирует document?
 function onCharactersLoadCallback(status, response) {
-  if (status !== 200) {
+  if (status !== 200 && status !== 404) {
     document.write(`Error status: ${status}`);
     return;
   }
 
-  let root = JSON.parse(response); // Ошибка парсинга?
+  let characters = readCharacters(status, response).map(character => createCharacterDiv(character));
 
-  let characters = root.results.map(character => createCharacterDiv(character));
   let oldCharactersDiv = document.getElementById('characters');
   let newCharactersDiv = document.createElement('div');
   newCharactersDiv.id = oldCharactersDiv.id;
   newCharactersDiv.append(...characters);
   oldCharactersDiv.replaceWith(newCharactersDiv);
+}
+
+function readCharacters(status, response) {
+  if (status === 404) {
+    return [];
+  }
+  return JSON.parse(response).results; // Ошибка парсинга?
 }
 
 function createCharacterDiv(character) {
