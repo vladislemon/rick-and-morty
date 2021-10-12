@@ -9,13 +9,21 @@ document.forms.search.onsubmit = (event) => {
     event.preventDefault();
 }
 
+function getContent() {
+    return document.getElementById('content');
+}
+
+function replaceContent(newContent) {
+    const oldContent = getContent();
+    newContent.id = oldContent.id;
+    oldContent.replaceWith(newContent);
+}
+
 function onCharactersLoadCallback(status, response) {
     const characters = response.map(character => createCharacterDiv(character));
-    const oldCharactersDiv = document.getElementById('characters');
-    const newCharactersDiv = document.createElement('div');
-    newCharactersDiv.id = oldCharactersDiv.id;
-    newCharactersDiv.append(...characters);
-    oldCharactersDiv.replaceWith(newCharactersDiv);
+    const newContent = document.createElement('div');
+    newContent.append(...characters);
+    replaceContent(newContent);
 }
 
 function createCharacterDiv(character) {
