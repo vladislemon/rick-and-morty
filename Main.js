@@ -41,5 +41,13 @@ function createCharacterDiv(character) {
 
     characterDiv.append(image, p, name);
 
+    characterDiv.onclick = (event) => onCharacterClick(event, character);
+
     return characterDiv;
+}
+
+function onCharacterClick(event, character) {
+    console.dir(character);
+    replaceContent(event.target);
+    event.preventDefault();
 }
