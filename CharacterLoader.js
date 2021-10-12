@@ -17,4 +17,19 @@ export class CharacterLoader {
         const requester = new Requester(onLoadFunction);
         requester.doGetRequest(`${CHARACTER_URL}?name=${characterName}`);
     }
+
+    loadCharacter(callback, characterId) {
+        const onLoadFunction = (status, response) => {
+            if (status !== 200) {
+                if (status !== 404) {
+                    alert(`Error status: ${status}`);
+                }
+                callback(status, []);
+                return;
+            }
+            callback(status, JSON.parse(response));
+        }
+        const requester = new Requester(onLoadFunction);
+        requester.doGetRequest(`${CHARACTER_URL}/${characterId}`);
+    }
 }
