@@ -4,10 +4,14 @@ import {CharacterLoader} from "./CharacterLoader.js";
 const characterLoader = new CharacterLoader();
 characterLoader.loadCharacters(onCharactersLoadCallback, "");
 
+let lastSearchString = "";
 document.forms.search.onsubmit = (event) => {
-    characterLoader.loadCharacters(onCharactersLoadCallback, document.forms.search.elements.name.value);
+    lastSearchString = document.forms.search.elements.name.value;
+    characterLoader.loadCharacters(onCharactersLoadCallback, lastSearchString);
     event.preventDefault();
 }
+
+window.onpopstate = () => characterLoader.loadCharacters(onCharactersLoadCallback, lastSearchString);
 
 function getContent() {
     return document.getElementById('content');
@@ -47,7 +51,25 @@ function createCharacterDiv(character) {
 }
 
 function onCharacterClick(event, character) {
-    console.dir(character);
-    replaceContent(event.target);
+    window.history.pushState(null, character.name);
+    characterLoader.loadCharacter(onCharacterLoadCallback, character.id);
     event.preventDefault();
+}
+
+function onCharacterLoadCallback(status, response) {
+    const character = createFullCharacterDiv(response);
+    const newContent = document.createElement('div');
+    newContent.append(character);
+    replaceContent(newContent);
+}
+
+function createFullCharacterDiv(character) {
+    const characterDiv = createCharacterDiv(character);
+
+    const p = document.createElement('p');
+    //const status = document.createTextNode(character.status);
+
+    characterDiv.append(p.cloneNode(), JSON.stringify(character));
+
+    return characterDiv;
 }
